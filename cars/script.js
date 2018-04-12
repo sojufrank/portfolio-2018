@@ -14,25 +14,31 @@ let model = {
     fetch json data from rest api, parse and label with tenerary operator because
     promise.all does not recieve json in order sent.
     */
-    Promise.all([model.apiCall(uri1,'sold'), model.apiCall(uri2,'forsale')])
+    Promise.all([model.apiCall(uri1, 'sold'), model.apiCall(uri2, 'forsale')])
       .then(res => {
         let data = {};
-        (res[0][0] === 'sold')? data['sold'] = res[0][1] : data['sold'] = res[1][1];
-        (res[1][0] === 'forsale')? data['forsale'] = res[1][1] : data['forsale'] = res[0][1];
+        (res[0][0] === 'sold') ? data['sold'] = res[0][1]: data['sold'] = res[1][1];
+        (res[1][0] === 'forsale') ? data['forsale'] = res[1][1]: data['forsale'] = res[0][1];
         model.setCarsObj(data);
       })
       .then(res => view.init())
   },
 
   //main data objects
-  carsObj: {'sold': {}, 'forsale': {}},
-  countObj: {'sold': 0,'forsale': 0},
+  carsObj: {
+    'sold': {},
+    'forsale': {}
+  },
+  countObj: {
+    'sold': 0,
+    'forsale': 0
+  },
 
   //apicall for use in getting json data via promise.all in parallel
   apiCall: (url, filterType) => {
     return fetch(url)
-              .then(res => res.json())
-              .then(data => [filterType, data]);
+      .then(res => res.json())
+      .then(data => [filterType, data]);
   },
 
   //fill carsObj object
@@ -60,17 +66,17 @@ let model = {
   setCarModels: (carData, type) => {
     carData.map(item => {
       const car = model['carsObj'][type][item.make][item.model];
-      if (!model['carsObj'][type][item.make][item.model]){
+      if (!model['carsObj'][type][item.make][item.model]) {
         model['carsObj'][type][item.make][item.model] = [];
       }
       model['carsObj'][type][item.make][item.model].push(item);
 
       //parse and set date object
       //sale date and retirement date
-      if('sale_date' in item){
+      if ('sale_date' in item) {
         item.sale_date = model.parseDate(item.sale_date);
       }
-      if('retirement_date' in item){
+      if ('retirement_date' in item) {
         item.retirement_date = model.parseDate(item.retirement_date);
       }
     });
@@ -84,7 +90,7 @@ let model = {
   //add car make count to countObj
   setCarCount: (type) => {
     let count = 0;
-    for (key in model['carsObj'][type]){
+    for (key in model['carsObj'][type]) {
       count++;
     }
     model['countObj'][type] = count;
@@ -94,8 +100,8 @@ let model = {
   reduceCars: (carData, type) => {
     let obj = {};
     carData.map(item => item[type])
-          .filter((elem, index, self) => index === self.indexOf(elem))
-          .map(item => obj[item] = {});
+      .filter((elem, index, self) => index === self.indexOf(elem))
+      .map(item => obj[item] = {});
     return obj;
   },
 
@@ -106,8 +112,8 @@ let model = {
 
         //Math.round the car sale price. sort and return
         model.carsObj.sold[make][carModel].forEach(car => car.sale_price = Math.round(car.sale_price))
-        model.carsObj.sold[make][carModel] = model.carsObj.sold[make][carModel].sort((a,b) => {
-          if(parseInt(a.sale_price) > parseInt(b.sale_price)){
+        model.carsObj.sold[make][carModel] = model.carsObj.sold[make][carModel].sort((a, b) => {
+          if (parseInt(a.sale_price) > parseInt(b.sale_price)) {
             return 1;
           } else {
             return -1;
@@ -124,9 +130,9 @@ let model = {
     Object.keys(cars).forEach(make => {
       Object.keys(cars[make]).forEach(carModel => {
         const car = model.carsObj.sold[make][carModel];
-        if(car){
+        if (car) {
           const arr = car.map(item => item.sale_price);
-          const sum = arr.reduce((a,b) => a + b);
+          const sum = arr.reduce((a, b) => a + b);
           const average = Math.round(sum / arr.length);
           cars[make][carModel].map(item => item['average_price'] = average)
         }
@@ -139,7 +145,7 @@ let controller = {
   init: () => {
     model.init();
   },
-  getforsale : () => {
+  getforsale: () => {
     return model.carsObj['forsale'];
   },
   getsold: () => {
@@ -211,7 +217,7 @@ let view = {
     makes.forEach(make => {
       const name = make.getAttribute('name');
       const node = document.createElement('ul');
-      node.classList.add('hidden','unorderedList');
+      node.classList.add('hidden', 'unorderedList');
 
       //write html node and fill it with vehicle model data from model.carsObj
       node.innerHTML = `
@@ -238,7 +244,7 @@ let view = {
       const carMake = model.dataset.make;
       const carModel = model.dataset.model;
       const node = document.createElement('ul');
-      node.classList.add('hidden','unorderedList');
+      node.classList.add('hidden', 'unorderedList');
 
       //write html node and fill it with vehicle's data from model.carsObj
       node.innerHTML = `
@@ -268,7 +274,7 @@ let view = {
       const index = vehicle.getAttribute('data-index');
       const node = document.createElement('ul');
       const shortVariable = data[make][model][index];
-      node.classList.add('hidden','unorderedList','dontHideOnClick');
+      node.classList.add('hidden', 'unorderedList', 'dontHideOnClick');
 
       //writes all vehicle data into list nodes
       node.innerHTML = `
@@ -287,7 +293,7 @@ let view = {
   },
 
   //set click handlers to all vehicles makes, models
-  clickHandlers : () => {
+  clickHandlers: () => {
     const makes = document.querySelectorAll('.makes');
     const models = document.querySelectorAll('.models');
     const cars = document.querySelectorAll('.vehicleItem');
@@ -306,20 +312,20 @@ let view = {
         let domNode = e.target;
 
         //if clicked dom node is a svg icon, get parent element
-        if(e.target.tagName == 'path'){
+        if (e.target.tagName == 'path') {
           domNode = e.target.parentElement.parentElement;
-        } else if(e.target.tagName == 'svg'){
+        } else if (e.target.tagName == 'svg') {
           domNode = e.target.parentElement;
         }
 
         //adds or removes .hidden css property to show/hide data
-        for(let i = 0; i < domNode.children.length; i++){
-          if(domNode.children[i].tagName != 'svg'){
+        for (let i = 0; i < domNode.children.length; i++) {
+          if (domNode.children[i].tagName != 'svg') {
             const shortVar = domNode.children[i];
 
-            if(shortVar.classList.contains('hidden')){
+            if (shortVar.classList.contains('hidden')) {
               shortVar.classList.remove('hidden')
-            } else{
+            } else {
               shortVar.classList.add('hidden')
               recDom2(domNode.children);
             }
@@ -330,13 +336,13 @@ let view = {
           recursive function to traverse dom nodes
           upon stack release finds 'ul' dom nodes and hides it
         */
-        function recDom2(node){
-          if(node.length == 0){
+        function recDom2(node) {
+          if (node.length == 0) {
             return
           }
-          for(let i = 0; i < node.length; i++){
+          for (let i = 0; i < node.length; i++) {
             recDom2(node[i].children)
-            if(node[i].tagName == 'UL'){
+            if (node[i].tagName == 'UL') {
               node[i].classList.add('hidden');
             }
           }

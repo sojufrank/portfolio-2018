@@ -1,15 +1,20 @@
 /* Always set the map height explicitly to define the size of the div
  * element that contains the map. */
+
 #map {
   height: 100%;
 }
+
 /* Optional: Makes the sample page fill the window. */
+
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
 }
+
 /* The location pointed to by the popup tip. */
+
 .popup-tip-anchor {
   height: 0;
   position: absolute;
@@ -17,14 +22,19 @@ html, body {
   width: 200px;
   margin-Top: -45px;
 }
+
 /* The bubble is anchored above the tip. */
+
 .popup-bubble-anchor {
   position: absolute;
   width: 100%;
-  bottom: /* TIP_HEIGHT= */ 8px;
+  bottom: /* TIP_HEIGHT= */
+  8px;
   left: 0;
 }
+
 /* Draw the tip. */
+
 .popup-bubble-anchor::after {
   content: "";
   position: absolute;
@@ -38,9 +48,12 @@ html, body {
   /* The tip is 8px high, and 12px wide. */
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
-  border-top: /* TIP_HEIGHT= */ 8px solid white;
+  border-top: /* TIP_HEIGHT= */
+  8px solid white;
 }
+
 /* The popup bubble itself. */
+
 .popup-bubble-content {
   position: absolute;
   top: 0;
@@ -53,5 +66,5 @@ html, body {
   font-family: sans-serif;
   overflow-y: auto;
   max-height: 60px;
-  box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
+  box-shadow: 0px 2px 10px 1px rgba(0, 0, 0, 0.5);
 }

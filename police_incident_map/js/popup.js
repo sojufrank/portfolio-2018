@@ -45,9 +45,9 @@ function definePopupClass() {
     var divPosition = this.getProjection().fromLatLngToDivPixel(this.position);
     // Hide the popup when it is far out of view.
     var display =
-        Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000 ?
-        'block' :
-        'none';
+      Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000 ?
+      'block' :
+      'none';
 
     if (display === 'block') {
       this.anchor.style.left = divPosition.x + 'px';
@@ -64,11 +64,12 @@ function definePopupClass() {
     anchor.style.cursor = 'auto';
 
     ['click', 'dblclick', 'contextmenu', 'wheel', 'mousedown', 'touchstart',
-     'pointerdown']
-        .forEach(function(event) {
-          anchor.addEventListener(event, function(e) {
-            e.stopPropagation();
-          });
-        });
+      'pointerdown'
+    ]
+    .forEach(function(event) {
+      anchor.addEventListener(event, function(e) {
+        e.stopPropagation();
+      });
+    });
   };
 }
