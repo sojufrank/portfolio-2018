@@ -155,7 +155,7 @@ let view = {
     view.writeApp(forsale)
   },
 
-  //set click handlers and use to switch between sold and forsale data
+  //set click handlers on buttons to switch between sold and forsale data
   setButtons: () => {
     const soldButton = document.querySelector('#sold');
     const forsaleButton = document.querySelector('#forsale');
@@ -230,6 +230,8 @@ let view = {
       make.appendChild(node);
     })
   },
+
+  //writes vehicle's to the document
   writeCars: (data) => {
     const models = document.querySelectorAll('.models');
     models.forEach(model => {
@@ -237,6 +239,8 @@ let view = {
       const carModel = model.dataset.model;
       const node = document.createElement('ul');
       node.classList.add('hidden','unorderedList');
+
+      //write html node and fill it with vehicle's data from model.carsObj
       node.innerHTML = `
         <div>
           ${data[carMake][carModel].map((item, index) => {
@@ -254,6 +258,8 @@ let view = {
       model.appendChild(node);
     });
   },
+
+  //writes specific vehicle data
   writeCarInfo: (data) => {
     const vehicles = document.querySelectorAll('.vehicleItem');
     vehicles.forEach(vehicle => {
@@ -263,6 +269,8 @@ let view = {
       const node = document.createElement('ul');
       const shortVariable = data[make][model][index];
       node.classList.add('hidden','unorderedList','dontHideOnClick');
+
+      //writes all vehicle data into list nodes
       node.innerHTML = `
         <div>
           ${Object.keys(shortVariable).map(item => {
@@ -277,6 +285,8 @@ let view = {
       vehicle.appendChild(node);
     })
   },
+
+  //set click handlers to all vehicles makes, models
   clickHandlers : () => {
     const makes = document.querySelectorAll('.makes');
     const models = document.querySelectorAll('.models');
@@ -287,18 +297,22 @@ let view = {
     view.setClick(cars);
 
   },
+
+  //setting click handlers
   setClick: (arr) => {
     arr.forEach(item => {
       item.addEventListener('click', (e) => {
         e.stopPropagation();
         let domNode = e.target;
 
+        //if clicked dom node is a svg icon, get parent element
         if(e.target.tagName == 'path'){
           domNode = e.target.parentElement.parentElement;
         } else if(e.target.tagName == 'svg'){
           domNode = e.target.parentElement;
         }
 
+        //adds or removes .hidden css property to show/hide data
         for(let i = 0; i < domNode.children.length; i++){
           if(domNode.children[i].tagName != 'svg'){
             const shortVar = domNode.children[i];
@@ -312,6 +326,10 @@ let view = {
           }
         }
 
+        /*
+          recursive function to traverse dom nodes
+          upon stack release finds 'ul' dom nodes and hides it
+        */
         function recDom2(node){
           if(node.length == 0){
             return

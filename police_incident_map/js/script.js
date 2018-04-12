@@ -110,10 +110,17 @@ let view = {
   init: () => {
     view.loadMap();
   },
+  /*this is a weird place to put this function but it technically writes a
+    html script tag to the dom so i placed it in the view
+    */
   loadMap: () => {
     const api = "AIzaSyDbESV5B5nIlPyzvqKs02R1HfcBC59RL8I"
     const js_file = document.createElement('script');
     js_file.type = 'text/javascript';
+    /*
+      within the <script> the callback, I cant seem to get it to execute a function
+      written in a module pattern so i had to use a global function initMap to get things started
+    */
     js_file.src = `https://maps.googleapis.com/maps/api/js?key=${api}&callback=initMap`;
     document.getElementsByTagName('head')[0].appendChild(js_file);
   }
