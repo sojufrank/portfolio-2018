@@ -5,34 +5,17 @@
 function initMap() {
   definePopupClass();
 
-  const seattle = {lat: 47.6097, lng: -122.3331};
-
-  const map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 15,
-    center: seattle,
-    gestureHandling: 'greedy'
-  });
-
   const data = controller.getReports();
-
   console.log(data);
 
-  data.forEach((item, index) => {
-    let myLatlng = {};
-    (item.latitude && item.longitude)?
-      myLatlng = new google.maps.LatLng(item.latitude, item.longitude) :
-      myLatlng = new google.maps.LatLng(item.location.latitude, item.location.longitude);
+  const map = mapModule.makeMap();
 
-    const marker = new google.maps.Marker({
-      position: myLatlng,
-      map: map,
-    });
+  data.forEach(item => {
+    const myLatLng = mapModule.getCoords(item.latitude,item.longitude,item.location);
+    const marker = mapModule.makeMarker(map, myLatLng);
+    const content = mapModule.makeContent(item);
 
-    const content = item.offense_type;
-    let infoWindow = new google.maps.InfoWindow({
-      content: content
-    });
-
+    //unable to put add listener method to map module due to error with popup window
     marker.addListener('click',(e) => {
 
       const contentParent = document.querySelector('.content-parent');
@@ -54,7 +37,37 @@ function initMap() {
           contentDiv);
       popup.setMap(map);
     });
-  })
+  });
+}
+
+let mapModule = {
+  makeMap: () => {
+    const map = document.querySelector('#map');
+    const seattle = {lat: 47.6097, lng: -122.3331};
+    return new google.maps.Map(map,{
+      zoom: 15,
+      center: seattle,
+      gestureHandling: 'greedy',
+      styles: style,
+      mapTypeControl: false
+    });
+  },
+  getCoords: (latitude,longitude,location) => {
+    let coords = {};
+    (latitude && longitude)?
+    coords = new google.maps.LatLng(latitude, longitude) :
+    coords = new google.maps.LatLng(location.latitude, location.longitude);
+    return coords;
+  },
+  makeMarker: (m, c) => {
+    return new google.maps.Marker({
+      position: c,
+      map: m,
+    });
+  },
+  makeContent: (data) => {
+    return data.offense_type;
+  }
 }
 
 let model = {
